@@ -1,5 +1,6 @@
 package com.example.cobol.migration.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
@@ -68,10 +69,12 @@ public class Record {
         this.enabled = enabled;
     }
     
+    @JsonIgnore
     public void setEnabledFlag(boolean flag) {
         this.enabled = flag ? "true" : "false";
     }
     
+    @JsonIgnore
     public boolean isEnabledFlag() {
         return "true".equals(this.enabled);
     }
