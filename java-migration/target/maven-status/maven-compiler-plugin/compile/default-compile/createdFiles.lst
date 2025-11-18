@@ -1,0 +1,8 @@
+com/example/cobol/migration/util/CobolDataConverter.class
+com/example/cobol/migration/serializer/JsonSerializer$SerializationResult.class
+com/example/cobol/migration/serializer/XmlSerializer$SerializationResult.class
+com/example/cobol/migration/serializer/JsonSerializer.class
+com/example/cobol/migration/serializer/SerializationException.class
+com/example/cobol/migration/Main.class
+com/example/cobol/migration/model/Record.class
+com/example/cobol/migration/serializer/XmlSerializer.class
