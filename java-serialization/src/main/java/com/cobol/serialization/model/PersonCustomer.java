@@ -1,5 +1,6 @@
 package com.cobol.serialization.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -64,6 +65,7 @@ public class PersonCustomer extends Customer {
         return (first + " " + last).trim();
     }
 
+    @JsonIgnore
     public String getRawNameData() {
         String first = firstName != null ? String.format("%-" + FIRST_NAME_LENGTH + "s", firstName) : 
                        String.format("%" + FIRST_NAME_LENGTH + "s", "");

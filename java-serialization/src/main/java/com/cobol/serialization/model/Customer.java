@@ -1,5 +1,6 @@
 package com.cobol.serialization.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
@@ -72,14 +73,17 @@ public abstract class Customer {
         this.address = address;
     }
 
+    @JsonIgnore
     public boolean isPerson() {
         return customerType == TYPE_PERSON;
     }
 
+    @JsonIgnore
     public boolean isCorporation() {
         return customerType == TYPE_CORP;
     }
 
+    @JsonIgnore
     public abstract String getDisplayName();
 
     public static Customer createPerson(String firstName, String lastName, Address address) {

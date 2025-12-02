@@ -1,5 +1,6 @@
 package com.cobol.serialization.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -97,6 +98,7 @@ public class Record {
         this.enabled = enabled ? "true" : "false";
     }
 
+    @JsonIgnore
     public boolean isBlankEmpty() {
         return blank == null || blank.trim().isEmpty();
     }
