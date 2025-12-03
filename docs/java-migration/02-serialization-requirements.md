@@ -81,12 +81,18 @@ display function trim(ws-json-output)
 
 **Requirement:** The JSON output should be compact (no unnecessary whitespace) and properly trimmed.
 
-**Expected Output Format:**
+**Actual COBOL Output (verified):**
 ```json
-{"name":"Test Name","value":"Test Value","ws-record-blank":"","enabled":true}
+{"ws-record":{"name":"Test Name","value":"Test Value","ws-record-blank":" ","enabled":"true"}}
 ```
 
-**Java Implementation:** Use Jackson's default compact serialization.
+**Key Observations:**
+1. The JSON has a root wrapper object named "ws-record" (the COBOL group item name)
+2. The "enabled" field is serialized as a string "true", not a boolean
+3. The "ws-record-blank" field contains a single space (not suppressed in JSON)
+4. Character count: 94
+
+**Java Implementation:** Use Jackson with a wrapper class or `@JsonRootName` annotation to match the root wrapper behavior. Note that the boolean is serialized as a string in COBOL.
 
 ## XML Serialization Requirements
 
@@ -124,12 +130,14 @@ with xml-declaration
 
 **Requirement:** The generated XML must include a standard XML declaration header.
 
-**Expected Format:**
+**Actual COBOL Output (verified):**
 ```xml
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0"?>
 ```
 
-**Java Implementation:** Configure JAXB Marshaller with `Marshaller.JAXB_FRAGMENT` set to `false`.
+Note: The COBOL implementation does not include an encoding attribute in the XML declaration.
+
+**Java Implementation:** Configure JAXB Marshaller with `Marshaller.JAXB_FRAGMENT` set to `false`. The encoding attribute may be omitted or included based on requirements.
 
 ### R-XML-003: Attribute Type Specification
 
@@ -237,7 +245,7 @@ on exception
 
 ## Functional Equivalence Test Cases
 
-### Test Case 1: JSON Generation with Sample Data
+### Test Case 1: JSON Generation with Sample Data (Verified)
 
 **Input:**
 ```
@@ -247,12 +255,19 @@ ws-record-blank = "          " (spaces)
 ws-record-flag = "true "
 ```
 
-**Expected JSON Output:**
+**Actual COBOL JSON Output:**
 ```json
-{"name":"Test Name","value":"Test Value","ws-record-blank":"","enabled":true}
+{"ws-record":{"name":"Test Name","value":"Test Value","ws-record-blank":" ","enabled":"true"}}
 ```
 
-### Test Case 2: XML Generation with Sample Data
+**Character Count:** 94
+
+**Key Observations:**
+- Root wrapper "ws-record" is included
+- Boolean "enabled" is serialized as string "true"
+- Blank field contains single space (not suppressed in JSON)
+
+### Test Case 2: XML Generation with Sample Data (Verified)
 
 **Input:**
 ```
@@ -262,15 +277,20 @@ ws-record-blank = "          " (spaces)
 ws-record-flag = "true "
 ```
 
-**Expected XML Output:**
+**Actual COBOL XML Output:**
 ```xml
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0"?>
 <ws-record enabled="true"><name>Test Name</name><value>Test Value</value></ws-record>
 ```
 
-Note: `ws-record-blank` is suppressed because it contains only spaces.
+**Character Count:** 107
 
-### Test Case 3: XML Generation with Non-Empty Blank Field
+**Key Observations:**
+- XML declaration has no encoding attribute
+- `ws-record-blank` is suppressed (SUPPRESS WHEN SPACES works correctly)
+- `enabled` is correctly rendered as an attribute
+
+### Test Case 3: XML Generation with Non-Empty Blank Field (Expected)
 
 **Input:**
 ```
@@ -282,9 +302,11 @@ ws-record-flag = "false"
 
 **Expected XML Output:**
 ```xml
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0"?>
 <ws-record enabled="false"><name>Test Name</name><value>Test Value</value><ws-record-blank>Has Data</ws-record-blank></ws-record>
 ```
+
+Note: When `ws-record-blank` contains non-space characters, it should appear in the output (trimmed).
 
 ## Non-Functional Requirements
 

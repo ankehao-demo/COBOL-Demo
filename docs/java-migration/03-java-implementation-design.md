@@ -64,6 +64,35 @@ While Jackson XML provides a unified API for both JSON and XML, JAXB was chosen 
 - More intuitive handling of XML declarations
 - Clearer separation of concerns between JSON and XML serialization
 
+## Important: Verified COBOL Output Format
+
+After running the actual COBOL programs, the following output formats were verified:
+
+**JSON Output (from json_generate.cbl):**
+```json
+{"ws-record":{"name":"Test Name","value":"Test Value","ws-record-blank":" ","enabled":"true"}}
+```
+
+Key observations that affect the Java design:
+1. **Root Wrapper:** The JSON has a root wrapper object named "ws-record" (the COBOL group item name)
+2. **String Boolean:** The "enabled" field is serialized as a string "true", not a native JSON boolean
+3. **No Suppression:** The "ws-record-blank" field contains a single space (not suppressed in JSON, unlike XML)
+4. **Character Count:** 94 characters
+
+**XML Output (from xml_generate.cbl):**
+```xml
+<?xml version="1.0"?>
+<ws-record enabled="true"><name>Test Name</name><value>Test Value</value></ws-record>
+```
+
+Key observations:
+1. **XML Declaration:** Uses version 1.0 without encoding attribute
+2. **Suppression Works:** The `ws-record-blank` field is correctly suppressed (SUPPRESS WHEN SPACES)
+3. **Attribute:** The `enabled` field is correctly rendered as an XML attribute
+4. **Character Count:** 107 characters
+
+These observations inform the Java implementation design below.
+
 ## Class Architecture
 
 ### Package Structure
