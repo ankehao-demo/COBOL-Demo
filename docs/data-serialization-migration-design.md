@@ -884,17 +884,22 @@ src/main/java/com/example/serialization/
 - Lines 38-40: Test data initialization
 - Lines 42-54: JSON GENERATE statement with all options
 
-### 8.2 Expected Output Samples
+### 8.2 Actual Output Samples (Validated)
 
-**XML Output:**
+**XML Output (107 characters):**
 ```xml
-<?xml version="1.0"?><ws-record enabled="true"><name>Test Name</name><value>Test Value</value></ws-record>
+<?xml version="1.0"?>
+<ws-record enabled="true"><name>Test Name</name><value>Test Value</value></ws-record>
 ```
 
-**JSON Output:**
+Note: The `ws-record-blank` field is suppressed because it contains only spaces (due to `suppress when spaces`).
+
+**JSON Output (94 characters):**
 ```json
-{"ws-record":{"name":"Test Name","value":"Test Value","ws-record-blank":"","enabled":"true"}}
+{"ws-record":{"name":"Test Name","value":"Test Value","ws-record-blank":" ","enabled":"true"}}
 ```
+
+Note: Unlike XML, JSON generation includes the blank field with a single space value (COBOL's fixed-length fields are space-padded).
 
 ### 8.3 Glossary
 
