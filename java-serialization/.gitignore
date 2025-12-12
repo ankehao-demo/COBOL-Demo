@@ -1,0 +1,21 @@
+# Compiled class files
+target/
+
+# IDE files
+.classpath
+.project
+.settings/
+*.iml
+.idea/
+
+# Log files
+*.log
+
+# Package files
+*.jar
+*.war
+*.ear
+
+# OS files
+.DS_Store
+Thumbs.db
