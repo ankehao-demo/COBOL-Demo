@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: com.cobol.migration.serializer.JsonSerializerTest
+-------------------------------------------------------------------------------
+Tests run: 3, Failures: 0, Errors: 0, Skipped: 3, Time elapsed: 0.040 s -- in com.cobol.migration.serializer.JsonSerializerTest
