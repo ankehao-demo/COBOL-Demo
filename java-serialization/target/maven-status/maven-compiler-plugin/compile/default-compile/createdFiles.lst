@@ -1,6 +1,0 @@
-com/cobol/migration/serializer/JsonSerializationException.class
-com/cobol/migration/model/SerializationResult.class
-com/cobol/migration/serializer/JsonSerializer.class
-com/cobol/migration/serializer/XmlSerializer.class
-com/cobol/migration/serializer/XmlSerializationException.class
-com/cobol/migration/util/StringUtils.class
