@@ -24,11 +24,12 @@ public class JsonGenerateExample {
         record.setValue("Test Value");
         record.setEnabledFlag(true);
 
+        RecordWrapper wrapper = new RecordWrapper(record);
+
         ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
 
         try {
-            String jsonOutput = objectMapper.writeValueAsString(record);
+            String jsonOutput = objectMapper.writeValueAsString(wrapper);
             int jsonCharCount = jsonOutput.length();
 
             System.out.println("JSON document successfully generated.");
