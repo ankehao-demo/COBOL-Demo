@@ -33,7 +33,7 @@ public class DataSerializationDemo {
         Record record = new Record();
         record.setName("Test Name");
         record.setValue("Test Value");
-        record.setBlank(null);
+        record.setBlank(" ");
         record.setEnabled(true);
 
         System.out.println(repeatChar('=', 60));

@@ -4,6 +4,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
+import java.util.Collections;
+import java.util.Map;
+
 /**
  * JSON Generator - Java equivalent of COBOL json_generate.cbl
  * 
@@ -75,7 +78,8 @@ public class JsonGenerator {
      */
     public JsonResult generate(Record record) {
         try {
-            String jsonOutput = objectMapper.writeValueAsString(record);
+            Map<String, Record> wrapper = Collections.singletonMap("ws-record", record);
+            String jsonOutput = objectMapper.writeValueAsString(wrapper);
             int charCount = jsonOutput.length();
             
             System.out.println("JSON document successfully generated.");
