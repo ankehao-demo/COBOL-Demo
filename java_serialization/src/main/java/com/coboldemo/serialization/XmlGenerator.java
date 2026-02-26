@@ -35,7 +35,8 @@ public class XmlGenerator {
             String xmlBody = xmlMapper.writeValueAsString(xmlRecord);
 
             // COBOL: with xml-declaration -> prepend XML declaration
-            String xmlOutput = "<?xml version=\"1.0\"?>" + xmlBody;
+            // GnuCOBOL inserts a newline after the XML declaration
+            String xmlOutput = "<?xml version=\"1.0\"?>\n" + xmlBody;
 
             // COBOL: not on exception -> display "XML document successfully generated."
             System.out.println("XML document successfully generated.");
