@@ -2,6 +2,7 @@ package com.cobol.migration;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 
 /**
  * Java equivalent of the COBOL JSON GENERATE program (json_generate/json_generate.cbl).
@@ -30,13 +31,16 @@ public class JsonSerializer {
 
     public static void main(String[] args) {
         ObjectMapper mapper = new ObjectMapper();
+        // Enable root wrapping to produce {"ws-record":{...}} matching COBOL JSON GENERATE output
+        mapper.enable(SerializationFeature.WRAP_ROOT_VALUE);
 
         // Populate the record (equivalent to COBOL MOVE statements)
         WsRecord record = new WsRecord();
         record.setWsRecordName("Test Name");   // move "Test Name" to ws-record-name
         record.setWsRecordValue("Test Value");  // move "Test Value" to ws-record-value
         record.setFlagEnabled();                // set ws-record-flag-enabled to true
-        // ws-record-blank is left unset (null) — equivalent to spaces in COBOL
+        // In COBOL, PIC X(10) fields default to spaces. JSON GENERATE includes blank fields.
+        record.setWsRecordBlank("          ");  // 10 spaces, matching COBOL PIC X(10) default
 
         try {
             // json generate ws-json-output from ws-record

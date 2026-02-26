@@ -1,7 +1,8 @@
 package com.cobol.migration;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonRootName;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -34,6 +35,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
  *   - ws-record-blank is suppressed in XML when blank (COBOL: SUPPRESS WHEN SPACES)
  *   - ws-record-blank is included in JSON even when blank (COBOL JSON has no suppression)
  */
+@JsonRootName("ws-record")
 @XmlRootElement(name = "ws-record")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class WsRecord {
@@ -59,6 +61,7 @@ public class WsRecord {
      * In XML: suppressed when blank (SUPPRESS WHEN SPACES).
      * In JSON: included even when blank (no suppression in COBOL JSON GENERATE).
      */
+    @JsonProperty("ws-record-blank")
     @XmlElement(name = "blank")
     @XmlJavaTypeAdapter(BlankSuppressingAdapter.class)
     private String wsRecordBlank;
@@ -121,6 +124,7 @@ public class WsRecord {
      * Equivalent to: SET ws-record-flag-enabled TO TRUE
      * Sets the flag to "true".
      */
+    @JsonIgnore
     public void setFlagEnabled() {
         this.wsRecordFlag = "true";
     }
@@ -129,6 +133,7 @@ public class WsRecord {
      * Equivalent to: SET ws-record-flag-disabled TO TRUE
      * Sets the flag to "false".
      */
+    @JsonIgnore
     public void setFlagDisabled() {
         this.wsRecordFlag = "false";
     }
@@ -137,6 +142,7 @@ public class WsRecord {
      * Equivalent to: 88 ws-record-flag-enabled value "true"
      * Returns true if the flag is "true".
      */
+    @JsonIgnore
     public boolean isFlagEnabled() {
         return "true".equals(wsRecordFlag);
     }
@@ -145,6 +151,7 @@ public class WsRecord {
      * Equivalent to: 88 ws-record-flag-disabled value "false"
      * Returns true if the flag is "false".
      */
+    @JsonIgnore
     public boolean isFlagDisabled() {
         return "false".equals(wsRecordFlag);
     }

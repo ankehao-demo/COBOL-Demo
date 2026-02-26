@@ -38,8 +38,8 @@ public class XmlSerializer {
             JAXBContext context = JAXBContext.newInstance(WsRecord.class);
             Marshaller marshaller = context.createMarshaller();
 
-            // JAXB_FORMATTED_OUTPUT for readable XML
-            marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+            // Compact output (no formatting) to match COBOL XML GENERATE behavior
+            marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, false);
 
             // JAXB_FRAGMENT = false (default) includes the XML declaration
             // This is equivalent to COBOL's WITH XML-DECLARATION
@@ -49,8 +49,7 @@ public class XmlSerializer {
             record.setWsRecordName("Test Name");   // move "Test Name" to ws-record-name
             record.setWsRecordValue("Test Value");  // move "Test Value" to ws-record-value
             record.setFlagEnabled();                // set ws-record-flag-enabled to true
-            // ws-record-blank is left unset (null) — equivalent to spaces in COBOL
-            // BlankSuppressingAdapter will suppress this element in XML output
+            // ws-record-blank is left null — in XML, SUPPRESS WHEN SPACES omits blank fields entirely
 
             // xml generate ws-xml-output from ws-record
             StringWriter writer = new StringWriter();
