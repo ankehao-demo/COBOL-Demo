@@ -1,7 +1,6 @@
 package com.coboldemo.mouse;
 
 import com.googlecode.lanterna.TerminalPosition;
-import com.googlecode.lanterna.TextCharacter;
 import com.googlecode.lanterna.TextColor;
 import com.googlecode.lanterna.input.KeyStroke;
 import com.googlecode.lanterna.input.KeyType;
@@ -99,8 +98,9 @@ public class MouseExample {
                         TerminalPosition pos = mouseAction.getPosition();
                         if (pos.getRow() < 18 && pos.getColumn() < 80) {
                             terminal.setCursorPosition(pos.getColumn(), pos.getRow());
-                            terminal.putCharacter(new TextCharacter(' ',
-                                    TextColor.ANSI.DEFAULT, COLORS[drawColor]).getCharacter());
+                            terminal.setBackgroundColor(COLORS[drawColor]);
+                            terminal.putCharacter(' ');
+                            terminal.resetColorAndSGR();
                             terminal.flush();
                         }
                     }

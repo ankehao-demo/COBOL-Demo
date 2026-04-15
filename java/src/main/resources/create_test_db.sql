@@ -1,5 +1,7 @@
-
-CREATE DATABASE IF NOT EXISTS cobol_db_example;
+-- Create the database (run separately if needed):
+--   createdb cobol_db_example
+-- Then connect and run this script:
+--   psql -U postgres -d cobol_db_example -f create_test_db.sql
 
 \c cobol_db_example ;
 
