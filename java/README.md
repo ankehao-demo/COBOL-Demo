@@ -1,10 +1,10 @@
 # COBOL Demo — Java Migration
 
-Java equivalents of 24 GnuCOBOL demo programs, preserving the original folder-per-topic organization. Each COBOL program has been faithfully translated to idiomatic Java 17, with detailed comments explaining the COBOL-to-Java mapping.
+Java equivalents of 24 GnuCOBOL demo programs, preserving the original folder-per-topic organization. Each COBOL program has been faithfully translated to idiomatic Java 11+, with detailed comments explaining the COBOL-to-Java mapping.
 
 ## Prerequisites
 
-- **JDK 17+** (Oracle JDK, OpenJDK, or Eclipse Temurin)
+- **JDK 11+** (Oracle JDK, OpenJDK, or Eclipse Temurin)
 - **Apache Maven 3.8+**
 - **PostgreSQL** (only required for the SQL example)
 
