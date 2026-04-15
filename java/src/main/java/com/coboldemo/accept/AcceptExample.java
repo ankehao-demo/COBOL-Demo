@@ -1,12 +1,7 @@
 package com.coboldemo.accept;
 
+import java.io.IOException;
 import java.util.Scanner;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 /**
  * Java equivalent of accept/accept.cbl
@@ -61,24 +56,31 @@ public class AcceptExample {
     /**
      * Reads a line from System.in with a timeout in seconds.
      * Equivalent to COBOL: ACCEPT ws-input TIMEOUT 3
+     *
+     * Uses polling via System.in.available() to avoid creating a background
+     * thread that would leak and compete with the main Scanner for input.
      */
     private static String readWithTimeout(int timeoutSeconds) {
-        ExecutorService executor = Executors.newSingleThreadExecutor();
-        Callable<String> readTask = () -> {
-            Scanner s = new Scanner(System.in);
-            return s.nextLine();
-        };
-        Future<String> future = executor.submit(readTask);
+        long deadline = System.currentTimeMillis() + timeoutSeconds * 1000L;
+        StringBuilder sb = new StringBuilder();
         try {
-            return future.get(timeoutSeconds, TimeUnit.SECONDS);
-        } catch (TimeoutException e) {
-            future.cancel(true);
-            return "";
-        } catch (Exception e) {
-            return "";
-        } finally {
-            executor.shutdownNow();
+            while (System.currentTimeMillis() < deadline) {
+                if (System.in.available() > 0) {
+                    int ch = System.in.read();
+                    if (ch == '\n' || ch == -1) {
+                        return sb.toString();
+                    }
+                    if (ch != '\r') {
+                        sb.append((char) ch);
+                    }
+                } else {
+                    Thread.sleep(100);
+                }
+            }
+        } catch (IOException | InterruptedException e) {
+            // timeout or interruption — return what we have
         }
+        return sb.toString();
     }
 
     /**

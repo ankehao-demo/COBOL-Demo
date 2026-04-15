@@ -31,14 +31,15 @@ import java.io.IOException;
  */
 public class MouseExample {
 
+    // GnuCOBOL color order: 0=Black, 1=Blue, 2=Green, 3=Cyan, 4=Red, 5=Magenta, 6=Yellow, 7=White
     private static final TextColor.ANSI[] COLORS = {
         TextColor.ANSI.BLACK,
-        TextColor.ANSI.RED,
-        TextColor.ANSI.GREEN,
-        TextColor.ANSI.YELLOW,
         TextColor.ANSI.BLUE,
-        TextColor.ANSI.MAGENTA,
+        TextColor.ANSI.GREEN,
         TextColor.ANSI.CYAN,
+        TextColor.ANSI.RED,
+        TextColor.ANSI.MAGENTA,
+        TextColor.ANSI.YELLOW,
         TextColor.ANSI.WHITE
     };
 

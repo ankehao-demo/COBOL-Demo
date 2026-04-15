@@ -28,8 +28,8 @@ public class DisplayTest {
         System.out.println("hello world\007");
 
         // DISPLAY "hello world" BACKGROUND-COLOR 03 FOREGROUND-COLOR 06
-        // Using ANSI escape codes: 03=cyan background(46), 06=cyan foreground(36)
-        // COBOL color 03 = cyan, COBOL color 06 = cyan
-        System.out.println("\033[46;36mhello world\033[0m");
+        // GnuCOBOL color 03 = cyan → ANSI background 46
+        // GnuCOBOL color 06 = yellow → ANSI foreground 33
+        System.out.println("\033[46;33mhello world\033[0m");
     }
 }
