@@ -4,7 +4,7 @@ Java migration of the GnuCOBOL demo programs. Each COBOL program has been conver
 
 ## Requirements
 
-- Java 17 or higher
+- Java 11 or higher
 - Maven 3.6+
 - PostgreSQL (only for the SQL example)
 
