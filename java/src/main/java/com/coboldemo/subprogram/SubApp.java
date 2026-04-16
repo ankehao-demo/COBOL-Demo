@@ -73,6 +73,10 @@ public class SubApp {
         System.out.println("  Received item-1: '" + item1 + "'");
         System.out.println("  Received item-2: '" + item2 + "'");
 
+        // Save current values to working-storage (same as BY REFERENCE path)
+        wsLastItem1 = item1;
+        wsLastItem2 = item2;
+
         // Modify local copies (caller does NOT see these changes)
         item1 = item1.toUpperCase();
         item2 = item2.toUpperCase();

@@ -7,6 +7,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
@@ -71,8 +72,20 @@ public class AcceptExample {
      * Returns empty string if timeout expires.
      */
     private static String readWithTimeout(int timeoutSeconds) {
-        ExecutorService executor = Executors.newSingleThreadExecutor();
+        // Use daemon thread so the JVM can shut down cleanly if the read is still blocked.
+        // Poll System.in.available() to avoid a non-interruptible blocking read that
+        // would steal input from the main Scanner after a timeout.
+        ThreadFactory daemonFactory = r -> {
+            Thread t = new Thread(r);
+            t.setDaemon(true);
+            return t;
+        };
+        ExecutorService executor = Executors.newSingleThreadExecutor(daemonFactory);
         Future<String> future = executor.submit((Callable<String>) () -> {
+            // Poll System.in so Thread.interrupt() can stop us
+            while (System.in.available() == 0) {
+                Thread.sleep(100);
+            }
             Scanner s = new Scanner(System.in);
             return s.nextLine();
         });
