@@ -1,0 +1,7 @@
+000001Test Student 1        CS 05
+000002Test Student 2        MA 03
+000003Test Student 3        EN 02
+000004Test Student 4        CS 04
+000005Test Student 5        SC 06
+000006Test Student 6        MA 01
+000007Test Student 7        AR 03
