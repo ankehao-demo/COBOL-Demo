@@ -45,7 +45,7 @@ public class ReportWriterExample {
         if (resourceStream != null) {
             inputReader = new BufferedReader(new InputStreamReader(resourceStream));
         } else {
-            inputReader = Files.newBufferedReader(Path.of("input.txt"));
+            inputReader = Files.newBufferedReader(Path.of("report_input.txt"));
         }
 
         PrintWriter reportWriter = new PrintWriter(Files.newBufferedWriter(Path.of("report.txt")));
