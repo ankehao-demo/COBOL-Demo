@@ -1,7 +1,8 @@
 package com.coboldemo.accept;
 
+import java.io.BufferedReader;
 import java.io.IOException;
-import java.util.Scanner;
+import java.io.InputStreamReader;
 
 /**
  * Java equivalent of accept/accept.cbl
@@ -9,29 +10,32 @@ import java.util.Scanner;
  * Demonstrates various forms of the ACCEPT verb in COBOL, mapped to Java
  * console I/O equivalents. Screen-mode positioning (AT LLCC) is replaced
  * with plain console output; use Lanterna for positioned terminal output.
+ *
+ * All reads use a single BufferedReader wrapping System.in to avoid the
+ * buffer-desync issues that arise when mixing Scanner with direct System.in reads.
  */
 public class AcceptExample {
 
-    public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
+    public static void main(String[] args) throws IOException {
+        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 
         // Basic accept: ACCEPT ws-input
         System.out.print("Simple accept. Enter a value: ");
-        String input = scanner.nextLine();
+        String input = reader.readLine();
         System.out.println("You entered: " + input);
 
         // ACCEPT OMITTED: wait for user input without storing it
         System.out.println("Press any key to continue.");
-        scanner.nextLine();
+        reader.readLine();
 
         // ACCEPT ... TIMEOUT 3: wait up to 3 seconds for input
         System.out.println("Enter value or wait 3 seconds: ");
-        input = readWithTimeout(3);
+        input = readWithTimeout(reader, 3);
         System.out.println("You entered: " + input);
 
         // ACCEPT ... AUTO-SKIP: read up to N characters (ws-input is PIC X(16))
         System.out.print("Enter 16 chars to auto skip: ");
-        input = readUpToNChars(scanner, 16);
+        input = readUpToNChars(reader, 16);
         System.out.println("You entered: " + input);
 
         // ACCEPT ... NO-ECHO: read input without echoing characters
@@ -40,33 +44,31 @@ public class AcceptExample {
             char[] noEcho = System.console().readPassword();
             input = new String(noEcho);
         } else {
-            input = scanner.nextLine();
+            input = reader.readLine();
             System.out.println("(no-echo not supported in this terminal)");
         }
         System.out.println("You entered: " + input);
 
         // ACCEPT ... UPPER: convert input to uppercase
         System.out.print("Enter a value: ");
-        input = scanner.nextLine().toUpperCase();
+        input = reader.readLine().toUpperCase();
         System.out.println("You entered: " + input);
-
-        scanner.close();
     }
 
     /**
      * Reads a line from System.in with a timeout in seconds.
      * Equivalent to COBOL: ACCEPT ws-input TIMEOUT 3
      *
-     * Uses polling via System.in.available() to avoid creating a background
-     * thread that would leak and compete with the main Scanner for input.
+     * Uses polling via reader.ready() to check for available input
+     * without blocking, avoiding buffer desync with the shared reader.
      */
-    private static String readWithTimeout(int timeoutSeconds) {
+    private static String readWithTimeout(BufferedReader reader, int timeoutSeconds) {
         long deadline = System.currentTimeMillis() + timeoutSeconds * 1000L;
         StringBuilder sb = new StringBuilder();
         try {
             while (System.currentTimeMillis() < deadline) {
-                if (System.in.available() > 0) {
-                    int ch = System.in.read();
+                if (reader.ready()) {
+                    int ch = reader.read();
                     if (ch == '\n' || ch == -1) {
                         return sb.toString();
                     }
@@ -87,11 +89,11 @@ public class AcceptExample {
      * Reads up to maxChars characters from the scanner.
      * Equivalent to COBOL: ACCEPT ws-input AUTO-SKIP (auto-submits when PIC length reached)
      */
-    private static String readUpToNChars(Scanner scanner, int maxChars) {
-        String line = scanner.nextLine();
-        if (line.length() > maxChars) {
+    private static String readUpToNChars(BufferedReader reader, int maxChars) throws IOException {
+        String line = reader.readLine();
+        if (line != null && line.length() > maxChars) {
             return line.substring(0, maxChars);
         }
-        return line;
+        return line != null ? line : "";
     }
 }

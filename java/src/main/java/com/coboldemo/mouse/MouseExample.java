@@ -43,8 +43,9 @@ public class MouseExample {
     };
 
     public static void main(String[] args) {
+        Terminal terminal = null;
         try {
-            Terminal terminal = new DefaultTerminalFactory().createTerminal();
+            terminal = new DefaultTerminalFactory().createTerminal();
             terminal.enterPrivateMode();
             terminal.clearScreen();
 
@@ -107,12 +108,22 @@ public class MouseExample {
                 }
             }
 
-            terminal.exitPrivateMode();
-            terminal.close();
-
         } catch (IOException | InterruptedException e) {
             System.err.println("Terminal error: " + e.getMessage());
             System.err.println("This program requires a real terminal with mouse support.");
+        } finally {
+            if (terminal != null) {
+                try {
+                    terminal.exitPrivateMode();
+                } catch (IOException ignored) {
+                    // best-effort cleanup
+                }
+                try {
+                    terminal.close();
+                } catch (IOException ignored) {
+                    // best-effort cleanup
+                }
+            }
         }
     }
 
