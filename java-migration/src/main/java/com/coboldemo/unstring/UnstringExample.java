@@ -38,7 +38,13 @@ public final class UnstringExample {
         System.out.println("PART2: " + part2);
     }
 
-    /** Multiple unstrings into the same destination variable via pointer. */
+    /**
+     * Multiple unstrings into the same destination variable via pointer.
+     * The COBOL program uses {@code DELIMITED BY ALL SPACES}, which collapses
+     * consecutive spaces into a single delimiter. After the second call the
+     * pointer lands past the end of the trailing padding and no overflow is
+     * reported.
+     */
     private static void example2() {
         String source = padRight("Hello World", 30);
         System.out.println(" ");
@@ -47,9 +53,9 @@ public final class UnstringExample {
         System.out.println();
         System.out.println("SOURCE STRING: " + source);
 
-        int pointer = 0;
+        int pointer = 1; // 1-based, matching COBOL WS-POINTER semantics.
         for (int i = 0; i < 2; i++) {
-            UnstringResult result = unstringSingle(source, pointer, " ");
+            UnstringResult result = unstringAll(source, pointer, ' ');
             String part1 = padRight(result.value(), 15);
             if (result.overflow()) {
                 System.out.println("ERROR: OVERFLOW");
@@ -200,13 +206,30 @@ public final class UnstringExample {
     private record UnstringResult(String value, int pointer, boolean overflow) {
     }
 
-    private static UnstringResult unstringSingle(String source, int start, String delimiter) {
-        int idx = source.indexOf(delimiter, start);
+    /**
+     * Mirrors COBOL {@code UNSTRING ... DELIMITED BY ALL <delim>}: scans for
+     * the first occurrence of {@code delim}, consumes every consecutive
+     * occurrence after it, and returns a 1-based pointer to the next unread
+     * character (or {@code source.length() + 1} when the source is exhausted).
+     * Overflow is true only when more unread source data remains.
+     */
+    private static UnstringResult unstringAll(String source, int start1Based, char delim) {
+        int start = Math.max(0, start1Based - 1);
+        if (start >= source.length()) {
+            return new UnstringResult("", source.length() + 1, false);
+        }
+        int idx = source.indexOf(delim, start);
         if (idx < 0) {
             return new UnstringResult(source.substring(start), source.length() + 1, false);
         }
-        boolean overflow = idx < source.length() - delimiter.length();
-        return new UnstringResult(source.substring(start, idx), idx + delimiter.length(), overflow);
+        String value = source.substring(start, idx);
+        int next = idx;
+        while (next < source.length() && source.charAt(next) == delim) {
+            next++;
+        }
+        int pointer1Based = next + 1;
+        boolean overflow = pointer1Based <= source.length();
+        return new UnstringResult(value, pointer1Based, overflow);
     }
 
     private static String padRight(String s, int width) {
