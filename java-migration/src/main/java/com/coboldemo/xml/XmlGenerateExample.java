@@ -7,9 +7,6 @@ import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlAttribute;
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlRootElement;
-import jakarta.xml.bind.annotation.XmlTransient;
-import jakarta.xml.bind.annotation.adapters.XmlAdapter;
-import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.io.StringWriter;
 
 /**
@@ -20,8 +17,9 @@ import java.io.StringWriter;
  * <ul>
  *   <li>{@code NAME OF ...} -> {@link XmlElement#name()}</li>
  *   <li>{@code TYPE OF ... IS ATTRIBUTE} -> {@link XmlAttribute}</li>
- *   <li>{@code SUPPRESS WHEN SPACES} -> a {@link XmlAdapter} that returns
- *       {@code null} for blank values so JAXB omits the element.</li>
+ *   <li>{@code SUPPRESS WHEN SPACES} -> assign {@code null} instead of an
+ *       empty string; JAXB omits {@link XmlElement} fields whose value is
+ *       {@code null} (the closest idiomatic Java equivalent).</li>
  *   <li>{@code WITH XML-DECLARATION} -> default marshaller behaviour.</li>
  * </ul>
  */
@@ -34,7 +32,8 @@ public final class XmlGenerateExample {
         Record record = new Record();
         record.name = "Test Name";
         record.value = "Test Value";
-        record.blank = ""; // suppressed on output
+        // SUPPRESS WHEN SPACES: null -> JAXB omits the element from output.
+        record.blank = suppressBlank("");
         record.enabled = "true";
 
         JAXBContext context = JAXBContext.newInstance(Record.class);
@@ -55,6 +54,14 @@ public final class XmlGenerateExample {
         System.out.println("Done.");
     }
 
+    /**
+     * Translates COBOL's {@code SUPPRESS WHEN SPACES}: an empty/whitespace
+     * value becomes {@code null} so JAXB leaves the element out entirely.
+     */
+    private static String suppressBlank(String value) {
+        return (value == null || value.isBlank()) ? null : value;
+    }
+
     /** Mirrors ws-record in xml_generate.cbl. */
     @XmlRootElement(name = "ws-record")
     @XmlAccessorType(XmlAccessType.FIELD)
@@ -70,7 +77,6 @@ public final class XmlGenerateExample {
         private String value;
 
         @XmlElement(name = "ws-record-blank")
-        @XmlJavaTypeAdapter(SuppressBlankAdapter.class)
         private String blank;
 
         public String getEnabled() {
@@ -89,29 +95,10 @@ public final class XmlGenerateExample {
             return blank;
         }
 
-        @XmlTransient
         @Override
         public String toString() {
             return "Record{name='" + name + "', value='" + value
                     + "', blank='" + blank + "', enabled='" + enabled + "'}";
-        }
-    }
-
-    /** Maps empty strings to {@code null} so JAXB suppresses the element. */
-    public static final class SuppressBlankAdapter
-            extends XmlAdapter<String, String> {
-
-        @Override
-        public String unmarshal(String v) {
-            return v;
-        }
-
-        @Override
-        public String marshal(String v) {
-            if (v == null || v.isEmpty()) {
-                return null;
-            }
-            return v;
         }
     }
 }
