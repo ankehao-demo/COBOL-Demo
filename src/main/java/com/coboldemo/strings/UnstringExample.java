@@ -145,7 +145,7 @@ public class UnstringExample {
         System.out.println();
 
         // PIC $999,999.99 with value 123456.12 -> "$123,456.12"
-        String sourceNum = String.format("$%,10.2f", 123456.12);
+        String sourceNum = String.format(java.util.Locale.US, "$%,10.2f", 123456.12);
         System.out.println("SOURCE VALUE: " + sourceNum);
 
         // Skip the '$' (start at position 1) and split by ',' or '.'
