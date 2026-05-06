@@ -1,2 +1,18 @@
+# Build output
 **/bin
+target/
+*.class
+*.jar
+!cobol-demo.jar
 
+# IDE
+.idea/
+*.iml
+.vscode/
+.classpath
+.project
+.settings/
+
+# Misc
+*.log
+report.txt
